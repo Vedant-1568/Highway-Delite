@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BookIt — Experiences & Slots (Single HTML)</title>
+
+  <script>
+    // Tailwind play CDN config
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#0f172a',
+            accent: '#06b6d4'
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .card-img {
+      background-position: center;
+      background-size: cover;
+    }
+    .slot-btn {
+      transition: all .12s;
+    }
+    .slot-btn[aria-disabled="true"] {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-800 min-h-screen">
+
+  <header class="bg-white shadow-sm sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-md bg-accent text-white flex items-center justify-center font-semibold">B</div>
+        <div>
+          <h1 class="text-lg font-semibold">BookIt</h1>
+          <div class="text-xs text-slate-500 -mt-1">Experiences & Slots</div>
+        </div>
+      </div>
+      <nav>
+        <button id="nav-home" class="text-sm text-slate-600 hover:text-brand">Home</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" class="max-w-6xl mx-auto px-4 py-8">
+    <!-- content injected by JS -->
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-4 py-6 text-sm text-slate-500">
+    <div>Demo single-file app • Promo codes: <strong>SAVE10</strong> (10% off), <strong>FLAT100</strong> (flat 100 off)</div>
+  </footer>
+
+<script>
+
+const sampleExperiences = [
+  {
+    _id: "exp1",
+    title: "Sunset Kayaking in Udaipur",
+    description: "Quiet guided kayak ride through the city lakes. Learn basic paddling and enjoy the sunset.",
+    price: 1200,
+    location: "Udaipur, India",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6d8b0f0f6f1f62ea6fda8f8b6c7d86f6",
+    slots: [
+      { slotId: "exp1-s1", date: "2025-11-02", time: "16:30", capacity: 8, booked: 2 },
+      { slotId: "exp1-s2", date: "2025-11-03", time: "16:30", capacity: 8, booked: 8 },
+      { slotId: "exp1-s3", date: "2025-11-04", time: "16:30", capacity: 8, booked: 1 }
+    ]
+  },
+  {
+    _id: "exp2",
+    title: "Rajasthan Village Cooking Workshop",
+    description: "Learn to cook local Rajasthani dishes in a friendly village kitchen. Ingredients & meal included.",
+    price: 900,
+    location: "Jaipur, India",
+    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=02c4a6a005b9c0b930a3769f6b7f0c94",
+    slots: [
+      { slotId: "exp2-s1", date: "2025-11-05", time: "10:00", capacity: 6, booked: 1 },
+      { slotId: "exp2-s2", date: "2025-11-07", time: "10:00", capacity: 6, booked: 4 }
+    ]
+  },
+  {
+    _id: "exp3",
+    title: "Hiking & Tea at Valley Ridge",
+    description: "Guided short hike, views, and village tea. Moderate fitness required.",
+    price: 600,
+    location: "Kumaon, India",
+    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=5b51b36bdbf4a2d2b8b2cf2f1d2f0f70",
+    slots: [
+      { slotId: "exp3-s1", date: "2025-11-08", time: "06:30", capacity: 12, booked: 10 },
+      { slotId: "exp3-s2", date: "2025-11-09", time: "06:30", capacity: 12, booked: 0 }
+    ]
+  },
+  {
+    _id: "exp4",
+    title: "Urban Street Photography Walk",
+    description: "Two-hour walk through photogenic neighborhoods; tips on composition and editing.",
+    price: 800,
+    location: "Mumbai, India",
+    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=0f952f4d1b1f2d86a9c4d1b5c5f6eb3b",
+    slots: [
+      { slotId: "exp4-s1", date: "2025-11-10", time: "17:00", capacity: 10, booked: 5 },
+      { slotId: "exp4-s2", date: "2025-11-11", time: "17:00", capacity: 10, booked: 2 }
+    ]
+  },
+  {
+    _id: "exp5",
+    title: "Heritage Bicycle Tour",
+    description: "Slow bike ride around colonial-era streets with a local guide. Bike provided.",
+    price: 700,
+    location: "Pondicherry, India",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=87f06a7a3f8b6b67d7c5bd2b2a0a7d7f",
+    slots: [
+      { slotId: "exp5-s1", date: "2025-11-12", time: "08:00", capacity: 15, booked: 3 }
+    ]
+  }
+];
+
+const $ = (sel, parent=document) => parent.querySelector(sel);
+const $$ = (sel, parent=document) => Array.from(parent.querySelectorAll(sel));
+const fmtCurrency = n => `₹${n.toLocaleString('en-IN')}`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+const LS_BOOKINGS = 'bookit_bookings_v1';
+const LS_EXPERIENCES = 'bookit_experiences_v1';
+
+if (!localStorage.getItem(LS_EXPERIENCES)) {
+  localStorage.setItem(LS_EXPERIENCES, JSON.stringify(sampleExperiences));
+}
+
+const PROMOS = {
+  'SAVE10': { type: 'percent', value: 10 },
+  'FLAT100': { type: 'flat', value: 100 }
+};
+
+async function fetchExperiences() {
+  await sleep(350);
+  return JSON.parse(localStorage.getItem(LS_EXPERIENCES) || '[]');
+}
+async function fetchExperienceById(id) {
+  const arr = await fetchExperiences();
+  return arr.find(x => x._id === id);
+}
+
+function getBookings() {
+  return JSON.parse(localStorage.getItem(LS_BOOKINGS) || '[]');
+}
+function saveBooking(b) {
+  const arr = getBookings();
+  arr.push(b);
+  localStorage.setItem(LS_BOOKINGS, JSON.stringify(arr));
+}
+function hasExistingBooking(slotId, email) {
+  return getBookings().some(b => b.slotId === slotId && b.email.toLowerCase() === email.toLowerCase());
+}
+
+function incrementSlotBooked(experienceId, slotId, qty) {
+  const exps = JSON.parse(localStorage.getItem(LS_EXPERIENCES) || '[]');
+  const exp = exps.find(e => e._id === experienceId);
+  if (!exp) return false;
+  const slot = exp.slots.find(s => s.slotId === slotId);
+  if (!slot) return false;
+  if ((slot.booked + qty) > (slot.capacity || 0)) return false;
+  slot.booked += qty;
+  localStorage.setItem(LS_EXPERIENCES, JSON.stringify(exps));
+  return true;
+}
+function validatePromo(code) {
+  if (!code) return { valid: false };
+  const c = code.trim().toUpperCase();
+  if (PROMOS[c]) return { valid: true, code: c, promo: PROMOS[c] };
+  return { valid: false };
+}
+
+const appEl = $('#app');
+
+function setHash(hash) {
+  location.hash = hash;
+}
+
+async function router() {
+  const hash = location.hash.replace('#','') || 'home';
+  if (hash === 'home') return renderHome();
+  if (hash.startsWith('details/')) {
+    const id = hash.split('/')[1];
+    return renderDetails(id);
+  }
+  if (hash.startsWith('checkout/')) {
+    const [_, expId, slotId] = hash.split('/');
+    return renderCheckout(expId, slotId);
+  }
+  if (hash.startsWith('result/')) {
+    const resultJson = decodeURIComponent(hash.split('/')[1] || '{}');
+    try {
+      const r = JSON.parse(resultJson);
+      return renderResult(r);
+    } catch {
+      return renderResult({ success: false, message: 'Invalid result' });
+    }
+  }
+  renderHome();
+}
+
+async function renderHome() {
+  appEl.innerHTML = `
+    <section>
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-semibold">Explore experiences</h2>
+          <p class="text-sm text-slate-500">Browse curated travel experiences and available slots.</p>
+        </div>
+        <div class="text-sm text-slate-600">Bookings: <span id="book-count">0</span></div>
+      </div>
+      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+  `;
+
+  $('#book-count').textContent = getBookings().length;
+
+  const grid = $('#grid');
+  const exps = await fetchExperiences();
+  if (!exps.length) {
+    grid.innerHTML = `<div class="p-8 bg-white rounded shadow text-slate-500">No experiences found.</div>`;
+    return;
+  }
+
+  exps.forEach(exp => {
+    const soldOut = exp.slots.every(s => (s.booked || 0) >= (s.capacity || 0));
+    const card = document.createElement('div');
+    card.className = 'bg-white rounded-lg overflow-hidden shadow';
+    card.innerHTML = `
+      <div class="h-44 card-img" style="background-image: url('${exp.image}')"></div>
+      <div class="p-4">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="font-semibold text-lg">${escapeHtml(exp.title)}</h3>
+            <div class="text-xs text-slate-500">${escapeHtml(exp.location)}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm text-slate-600">From</div>
+            <div class="font-semibold text-lg">${fmtCurrency(exp.price)}</div>
+          </div>
+        </div>
+
+        <p class="mt-3 text-sm text-slate-600 line-clamp-3">${escapeHtml(exp.description)}</p>
+
+        <div class="mt-4 flex items-center justify-between">
+          <button data-id="${exp._id}" class="open-details w-full mr-2 inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-accent text-white text-sm hover:opacity-95">
+            View details
+          </button>
+          <button data-id="${exp._id}" class="book-now ml-2 text-sm px-3 py-2 rounded border border-slate-200 ${soldOut ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50'}" ${soldOut ? 'disabled' : ''}>
+            ${soldOut ? 'Sold out' : 'Quick book'}
+          </button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  $$('.open-details').forEach(btn => btn.addEventListener('click', e => {
+    const id = e.currentTarget.dataset.id;
+    setHash(`details/${id}`);
+  }));
+  $$('.book-now').forEach(btn => btn.addEventListener('click', async e => {
+    const id = e.currentTarget.dataset.id;
+    // pick first available slot with space
+    const exp = await fetchExperienceById(id);
+    const slot = exp.slots.find(s => (s.booked || 0) < (s.capacity || 0));
+    if (!slot) {
+      alert('No available slots for quick book. Please view details.');
+      return;
+    }
+    setHash(`checkout/${id}/${slot.slotId}`);
+  }));
+}
+
+async function renderDetails(id) {
+  appEl.innerHTML = `<div class="p-6 bg-white rounded shadow">Loading...</div>`;
+  const exp = await fetchExperienceById(id);
+  if (!exp) {
+    appEl.innerHTML = `<div class="p-6 bg-white rounded shadow">Experience not found.</div>`;
+    return;
+  }
+  const slotItems = exp.slots.map(s => {
+    const seatsLeft = (s.capacity || 0) - (s.booked || 0);
+    const soldOut = seatsLeft <= 0;
+    return `
+      <div class="p-3 border rounded-md flex items-center justify-between gap-4 bg-white">
+        <div>
+          <div class="font-medium">${formatDate(s.date)} • ${s.time}</div>
+          <div class="text-sm text-slate-500">${seatsLeft} seats left</div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="view-slot text-sm px-3 py-2 rounded border" data-slot="${s.slotId}" ${soldOut ? 'disabled aria-disabled="true"' : ''}>Select</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  appEl.innerHTML = `
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden">
+        <div class="h-64 card-img" style="background-image: url('${exp.image}')"></div>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold">${escapeHtml(exp.title)}</h2>
+          <div class="text-sm text-slate-500">${escapeHtml(exp.location)}</div>
+          <p class="mt-4 text-slate-700">${escapeHtml(exp.description)}</p>
+        </div>
+      </div>
+
+      <aside class="bg-white rounded shadow p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-slate-500">Price per person</div>
+            <div class="text-xl font-semibold">${fmtCurrency(exp.price)}</div>
+          </div>
+          <div class="text-sm text-slate-500">Slots</div>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          ${slotItems}
+        </div>
+
+        <div class="mt-6">
+          <button id="back-to-home" class="w-full px-4 py-2 rounded border text-sm">Back</button>
+        </div>
+      </aside>
+    </section>
+  `;
+
+  $$('.view-slot').forEach(btn => btn.addEventListener('click', e => {
+    const slotId = e.currentTarget.dataset.slot;
+    setHash(`checkout/${id}/${slotId}`);
+  }));
+  $('#back-to-home').addEventListener('click', () => setHash('home'));
+}
+
+async function renderCheckout(expId, slotId) {
+  const exp = await fetchExperienceById(expId);
+  if (!exp) return setHash('home');
+  const slot = exp.slots.find(s => s.slotId === slotId);
+  if (!slot) return setHash(`details/${expId}`);
+
+  if ((slot.booked || 0) >= (slot.capacity || 0)) {
+    return appEl.innerHTML = `
+      <div class="p-6 bg-white rounded shadow">
+        <h3 class="font-semibold">Slot sold out</h3>
+        <p class="text-sm text-slate-500 mt-2">Please choose another slot.</p>
+        <div class="mt-4"><button id="back-to-details" class="px-3 py-2 rounded border">Back</button></div>
+      </div>`;
+  }
+
+  appEl.innerHTML = `
+    <div class="bg-white rounded shadow p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-2">
+          <h2 class="text-xl font-semibold">Checkout</h2>
+          <p class="text-sm text-slate-500">Complete your booking for <strong>${escapeHtml(exp.title)}</strong></p>
+
+          <form id="checkout-form" class="mt-6 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700">Selected slot</label>
+              <div class="mt-2 text-sm">${formatDate(slot.date)} • ${slot.time} • (${(slot.capacity - slot.booked)} seats left)</div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm text-slate-600">Full name</label>
+                <input name="name" class="mt-1 w-full px-3 py-2 border rounded" required />
+              </div>
+              <div>
+                <label class="block text-sm text-slate-600">Email</label>
+                <input name="email" type="email" class="mt-1 w-full px-3 py-2 border rounded" required />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm text-slate-600">Quantity</label>
+                <select name="qty" class="mt-1 w-full px-3 py-2 border rounded">
+                  ${[1,2,3,4,5].map(n => `<option value="${n}">${n}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm text-slate-600">Promo code</label>
+                <div class="mt-1 flex gap-2">
+                  <input name="promo" placeholder="e.g., SAVE10" class="flex-1 px-3 py-2 border rounded" />
+                  <button id="apply-promo" class="px-3 py-2 rounded bg-accent text-white">Apply</button>
+                </div>
+                <div id="promo-msg" class="text-sm mt-2"></div>
+              </div>
+            </div>
+
+            <div class="mt-3" id="price-summary">
+              <!-- price summary rendered here -->
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button type="submit" class="px-4 py-2 rounded bg-brand text-white">Pay & Book</button>
+              <button type="button" id="cancel" class="px-3 py-2 rounded border">Cancel</button>
+            </div>
+
+            <div id="form-error" class="text-sm text-red-600 mt-2"></div>
+          </form>
+        </div>
+
+        <aside class="bg-slate-50 p-4 rounded">
+          <h3 class="text-sm font-medium text-slate-700">Experience</h3>
+          <div class="mt-3">
+            <div class="h-36 w-full rounded-md bg-cover bg-center" style="background-image: url('${exp.image}')"></div>
+            <div class="mt-3">
+              <div class="font-semibold">${escapeHtml(exp.title)}</div>
+              <div class="text-sm text-slate-500">${escapeHtml(exp.location)}</div>
+              <div class="mt-2 text-lg font-semibold">${fmtCurrency(exp.price)}</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  `;
+
+  let appliedPromo = null;
+  function renderPrice(qty = 1) {
+    const base = exp.price * qty;
+    let discount = 0;
+    if (appliedPromo) {
+      if (appliedPromo.type === 'percent') discount = Math.round(base * (appliedPromo.value / 100));
+      else if (appliedPromo.type === 'flat') discount = appliedPromo.value;
+      if (discount > base) discount = base;
+    }
+    const total = Math.max(0, base - discount);
+    $('#price-summary').innerHTML = `
+      <div class="p-3 border rounded">
+        <div class="flex items-center justify-between"><div class="text-sm text-slate-500">Subtotal</div><div class="font-medium">${fmtCurrency(base)}</div></div>
+        <div class="flex items-center justify-between mt-2"><div class="text-sm text-slate-500">Discount${appliedPromo ? ` (${appliedPromo.type === 'percent' ? appliedPromo.value + '%' : '₹' + appliedPromo.value})` : ''}</div><div class="font-medium text-green-600">-${fmtCurrency(discount)}</div></div>
+        <div class="border-t mt-3 pt-3 flex items-center justify-between"><div class="font-semibold">Total</div><div class="font-semibold">${fmtCurrency(total)}</div></div>
+      </div>
+    `;
+    return { base, discount, total };
+  }
+
+  $('#apply-promo').addEventListener('click', e => {
+    e.preventDefault();
+    const code = $('input[name="promo"]').value.trim();
+    const res = validatePromo(code);
+    const msg = $('#promo-msg');
+    if (!code) {
+      msg.textContent = 'Enter a code';
+      msg.className = 'text-sm text-slate-500 mt-2';
+      appliedPromo = null;
+      renderPrice(Number($('select[name="qty"]').value));
+      return;
+    }
+    if (!res.valid) {
+      msg.textContent = 'Invalid promo';
+      msg.className = 'text-sm text-red-600 mt-2';
+      appliedPromo = null;
+    } else {
+      msg.textContent = `Applied ${res.code}`;
+      msg.className = 'text-sm text-green-600 mt-2';
+      appliedPromo = res.promo;
+    }
+    renderPrice(Number($('select[name="qty"]').value));
+  });
+
+  $('select[name="qty"]').addEventListener('change', e => renderPrice(Number(e.target.value)));
+
+  renderPrice(1);
+
+  $('#checkout-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    $('#form-error').textContent = '';
+    const form = e.target;
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const qty = Number(form.qty.value);
+    const promoCode = form.promo.value.trim().toUpperCase();
+
+    if (!name) return $('#form-error').textContent = 'Please enter your name.';
+    if (!isValidEmail(email)) return $('#form-error').textContent = 'Please enter a valid email.';
+
+    if (hasExistingBooking(slotId, email)) {
+      $('#form-error').textContent = 'You already have a booking for this slot with this email.';
+      return;
+    }
+
+    const seatsLeft = (slot.capacity || 0) - (slot.booked || 0);
+    if (qty > seatsLeft) {
+      $('#form-error').textContent = `Only ${seatsLeft} seats left — reduce quantity.`;
+      return;
+    }
+
+    const { base, discount, total } = renderPrice(qty);
+    const payBtn = form.querySelector('button[type="submit"]');
+    payBtn.setAttribute('disabled', 'true');
+    payBtn.classList.add('opacity-60');
+    await sleep(700);
+
+const ok = incrementSlotBooked(expId, slotId, qty);
+    if (!ok) {
+      $('#form-error').textContent = 'Could not reserve seats (concurrency). Try again.';
+      payBtn.removeAttribute('disabled');
+      payBtn.classList.remove('opacity-60');
+      return;
+    }
+
+    const booking = {
+      id: 'bk_' + Math.random().toString(36).slice(2,9),
+      experienceId: expId,
+      slotId,
+      name,
+      email,
+      qty,
+      promo: promoCode || null,
+      discount,
+      totalPrice: total,
+      createdAt: new Date().toISOString()
+    };
+    saveBooking(booking);
+
+    setHash(`result/${encodeURIComponent(JSON.stringify({ success: true, booking }))}`);
+  });
+
+  $('#cancel').addEventListener('click', () => setHash(`details/${expId}`));
+}
+
+function renderResult(obj) {
+  if (!obj || !obj.success) {
+    appEl.innerHTML = `
+      <div class="p-6 bg-white rounded shadow text-center">
+        <h3 class="text-xl font-semibold">Booking failed</h3>
+        <p class="mt-3 text-sm text-slate-500">${escapeHtml(obj.message || 'Unknown error')}</p>
+        <div class="mt-6"><button id="go-home" class="px-4 py-2 rounded border">Back to Home</button></div>
+      </div>
+    `;
+    $('#go-home').addEventListener('click', () => setHash('home'));
+    return;
+  }
+
+  const b = obj.booking;
+  appEl.innerHTML = `
+    <div class="bg-white rounded shadow p-6 max-w-2xl mx-auto text-center">
+      <div class="text-green-600 text-3xl">✓</div>
+      <h2 class="text-2xl font-semibold mt-3">Booking Confirmed</h2>
+      <p class="text-sm text-slate-500 mt-2">Thank you, <strong>${escapeHtml(b.name)}</strong>. A confirmation has been saved locally.</p>
+
+      <div class="mt-6 text-left bg-slate-50 p-4 rounded">
+        <div class="flex justify-between"><div class="text-sm text-slate-500">Booking ID</div><div class="font-medium">${b.id}</div></div>
+        <div class="flex justify-between mt-2"><div class="text-sm text-slate-500">Experience</div><div class="font-medium">${escapeHtml(prettyExpTitle(b.experienceId))}</div></div>
+        <div class="flex justify-between mt-2"><div class="text-sm text-slate-500">Slot</div><div class="font-medium">${prettySlot(b.slotId)}</div></div>
+        <div class="flex justify-between mt-2"><div class="text-sm text-slate-500">Quantity</div><div class="font-medium">${b.qty}</div></div>
+        <div class="flex justify-between mt-2"><div class="text-sm text-slate-500">Total</div><div class="font-medium">${fmtCurrency(b.totalPrice)}</div></div>
+      </div>
+
+      <div class="mt-6 flex justify-center gap-3">
+        <button id="go-home" class="px-4 py-2 rounded border">Back to Home</button>
+        <button id="view-bookings" class="px-4 py-2 rounded bg-accent text-white">View My Bookings</button>
+      </div>
+    </div>
+  `;
+  $('#go-home').addEventListener('click', () => setHash('home'));
+  $('#view-bookings').addEventListener('click', () => renderMyBookings());
+}
+
+function renderMyBookings() {
+  const bookings = getBookings();
+  appEl.innerHTML = `
+    <div class="bg-white rounded shadow p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">My bookings (${bookings.length})</h3>
+        <div><button id="home-btn" class="px-3 py-2 rounded border">Home</button></div>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        ${bookings.length === 0 ? '<div class="p-4 text-slate-500">No bookings yet.</div>' : bookings.map(b => `
+          <div class="p-3 border rounded flex items-center justify-between">
+            <div>
+              <div class="font-medium">${escapeHtml(prettyExpTitle(b.experienceId))}</div>
+              <div class="text-sm text-slate-500">${prettySlot(b.slotId)} • ${b.qty} person(s)</div>
+            </div>
+            <div class="text-right">
+              <div class="font-semibold">${fmtCurrency(b.totalPrice)}</div>
+              <div class="text-xs text-slate-500">${new Date(b.createdAt).toLocaleString()}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  $('#home-btn').addEventListener('click', () => setHash('home'));
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;');
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+function formatDate(d) {
+  try {
+    const dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+  } catch { return d; }
+}
+function prettyExpTitle(expId) {
+  const exps = JSON.parse(localStorage.getItem(LS_EXPERIENCES) || '[]');
+  const e = exps.find(x => x._id === expId);
+  return e ? e.title : expId;
+}
+function prettySlot(slotId) {
+  const exps = JSON.parse(localStorage.getItem(LS_EXPERIENCES) || '[]');
+  for (const e of exps) {
+    const s = (e.slots||[]).find(s=>s.slotId===slotId);
+    if (s) return `${formatDate(s.date)} • ${s.time}`;
+  }
+  return slotId;
+}
+
+window.addEventListener('hashchange', router);
+$('#nav-home').addEventListener('click', () => setHash('home'));
+
+router();
+
+</script>
+</body>
+</html>
